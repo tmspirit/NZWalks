@@ -67,6 +67,13 @@ namespace NZWalksAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegionAsync(Models.DTO.AddRegionRequest addRegionRequest)
         {
+
+            //VAlidamos el modelo del request
+            if (!ValidateAddRegionAsync(addRegionRequest))
+            {
+                return BadRequest(ModelState);
+            }
+
             //Request(DTO) to Domanin Model
             var region = new Models.Domain.Region()
             {
@@ -133,6 +140,12 @@ namespace NZWalksAPI.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid id,[FromBody] Models.DTO.UpdateRegionRequest updateRegionRequest)
         {
+            //Validate the incoming request
+            if(ValidateUpdateRegionAsync(updateRegionRequest))
+            {
+                return BadRequest(ModelState);
+            }
+
             // Convert DTO to Domain Model
             var region = mapper.Map<Models.Domain.Region>(updateRegionRequest);
 
@@ -148,6 +161,88 @@ namespace NZWalksAPI.Controllers
             return Ok(regionRequestDTO);
         }
 
-    
+        #region Private Methods
+
+        private bool ValidateAddRegionAsync(Models.DTO.AddRegionRequest addRegionRequest)
+        {
+            if (addRegionRequest==null)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest), $"{nameof(addRegionRequest)} Los datos son necesarios");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(addRegionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Code), $"{nameof(addRegionRequest.Code)} no puede ser vacio");
+            }
+            if (string.IsNullOrEmpty(addRegionRequest.Name))
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Name), $"{nameof(addRegionRequest.Name)} no puede ser vacio");
+            }
+            if (addRegionRequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Area), $"{nameof(addRegionRequest.Area)} no puede ser menos o igual a 0");
+            }
+            if (addRegionRequest.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Lat), $"{nameof(addRegionRequest.Lat)} no puede ser menos o igual a 0");
+            }
+            if (addRegionRequest.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Long), $"{nameof(addRegionRequest.Long)} no puede ser menos o igual a 0");
+            }
+            if (addRegionRequest.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(addRegionRequest.Population), $"{nameof(addRegionRequest.Population)} no puede ser menos a 0");
+            }
+            //Asi comprobamos que ha pasado correctamente todas las comprobaciones anteriores en vez de hacer el return en cada una
+            if (ModelState.ErrorCount > 0)
+            {
+                return false; 
+            }
+
+            return true;
+        }
+        private bool ValidateUpdateRegionAsync(Models.DTO.UpdateRegionRequest updateRegionRequest)
+        {
+            if (updateRegionRequest==null)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest), $"{nameof(updateRegionRequest)} Los datos son necesarios");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(updateRegionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Code), $"{nameof(updateRegionRequest.Code)} no puede ser vacio");
+            }
+            if (string.IsNullOrEmpty(updateRegionRequest.Name))
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Name), $"{nameof(updateRegionRequest.Name)} no puede ser vacio");
+            }
+            if (updateRegionRequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Area), $"{nameof(updateRegionRequest.Area)} no puede ser menos o igual a 0");
+            }
+            if (updateRegionRequest.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Lat), $"{nameof(updateRegionRequest.Lat)} no puede ser menos o igual a 0");
+            }
+            if (updateRegionRequest.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Long), $"{nameof(updateRegionRequest.Long)} no puede ser menos o igual a 0");
+            }
+            if (updateRegionRequest.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Population), $"{nameof(updateRegionRequest.Population)} no puede ser menos a 0");
+            }
+            //Asi comprobamos que ha pasado correctamente todas las comprobaciones anteriores en vez de hacer el return en cada una
+            if (ModelState.ErrorCount > 0)
+            {
+                return false; 
+            }
+
+            return true;
+        }
+        #endregion
     }
 }
