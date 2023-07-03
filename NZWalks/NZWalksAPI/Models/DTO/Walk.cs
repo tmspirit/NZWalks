@@ -1,4 +1,6 @@
-﻿namespace NZWalksAPI.Models.Domain
+﻿using NZWalksAPI.Models.Domain;
+
+namespace NZWalksAPI.Models.DTO
 {
     public class Walk
     {
@@ -7,7 +9,6 @@
         public double Length { get; set; }
         public Guid RegionId { get; set; }
         public Guid WalkDifficultyId { get; set; }
-
 
         //Navigation Property
         //Definimos la conexion entre Walk y Region

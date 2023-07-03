@@ -19,6 +19,7 @@ builder.Services.AddDbContext<NZWalksDbContext>(options =>
 
 //Inyecto mi repositorio
 builder.Services.AddScoped<IRegionRepository,RegionRepository>();
+builder.Services.AddScoped<IWalkRepository, WalkRepository>();
 
 //Inyect Automapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
