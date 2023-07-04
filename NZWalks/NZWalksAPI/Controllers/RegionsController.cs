@@ -69,10 +69,10 @@ namespace NZWalksAPI.Controllers
         {
 
             //VAlidamos el modelo del request
-            if (!ValidateAddRegionAsync(addRegionRequest))
-            {
-                return BadRequest(ModelState);
-            }
+            //if (!ValidateAddRegionAsync(addRegionRequest))
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             //Request(DTO) to Domanin Model
             var region = new Models.Domain.Region()
@@ -141,10 +141,10 @@ namespace NZWalksAPI.Controllers
         public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid id,[FromBody] Models.DTO.UpdateRegionRequest updateRegionRequest)
         {
             //Validate the incoming request
-            if(ValidateUpdateRegionAsync(updateRegionRequest))
-            {
-                return BadRequest(ModelState);
-            }
+            //if(!ValidateUpdateRegionAsync(updateRegionRequest))
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             // Convert DTO to Domain Model
             var region = mapper.Map<Models.Domain.Region>(updateRegionRequest);
@@ -162,7 +162,6 @@ namespace NZWalksAPI.Controllers
         }
 
         #region Private Methods
-
         private bool ValidateAddRegionAsync(Models.DTO.AddRegionRequest addRegionRequest)
         {
             if (addRegionRequest==null)
@@ -222,14 +221,6 @@ namespace NZWalksAPI.Controllers
             if (updateRegionRequest.Area <= 0)
             {
                 ModelState.AddModelError(nameof(updateRegionRequest.Area), $"{nameof(updateRegionRequest.Area)} no puede ser menos o igual a 0");
-            }
-            if (updateRegionRequest.Lat <= 0)
-            {
-                ModelState.AddModelError(nameof(updateRegionRequest.Lat), $"{nameof(updateRegionRequest.Lat)} no puede ser menos o igual a 0");
-            }
-            if (updateRegionRequest.Long <= 0)
-            {
-                ModelState.AddModelError(nameof(updateRegionRequest.Long), $"{nameof(updateRegionRequest.Long)} no puede ser menos o igual a 0");
             }
             if (updateRegionRequest.Population <= 0)
             {

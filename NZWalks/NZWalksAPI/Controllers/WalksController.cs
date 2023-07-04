@@ -12,11 +12,13 @@ namespace NZWalksAPI.Controllers
     {
         private readonly IWalkRepository walkRepository;
         private readonly IMapper mapper;
+        private readonly IRegionRepository regionRepository;
 
-        public WalksController(IWalkRepository walkRepository, IMapper mapper)
+        public WalksController(IWalkRepository walkRepository, IMapper mapper, IRegionRepository regionRepository)
         {
             this.walkRepository = walkRepository;
             this.mapper = mapper;
+            this.regionRepository = regionRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllWalks()
@@ -49,6 +51,12 @@ namespace NZWalksAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkAsync([FromBody] Models.DTO.AddWalkRequest addWalkRequest)
         {
+            //Validate the incoming request
+            if (!await ValidateAddWalkAsync(addWalkRequest))
+            {
+                return BadRequest(ModelState);
+            }
+
             var walkDomain = mapper.Map<Models.Domain.Walk>(addWalkRequest);
 
             walkDomain = await walkRepository.AddAsync(walkDomain);
@@ -56,7 +64,6 @@ namespace NZWalksAPI.Controllers
             var walkDTO= mapper.Map<Models.DTO.Walk>(walkDomain);
 
             return CreatedAtAction(nameof(GetWalkAsync), new {id= walkDTO.Id}, walkDTO);
-
 
         }
 
@@ -101,5 +108,23 @@ namespace NZWalksAPI.Controllers
 
             return Ok(walkDTO);
         }
+
+        #region Private Methods
+        private async Task<bool> ValidateAddWalkAsync(Models.DTO.AddWalkRequest addWalkRequest)
+        {
+            var region = await regionRepository.GetAsync(addWalkRequest.RegionId);
+            if (region == null)
+            {
+                ModelState.AddModelError(nameof(addWalkRequest.RegionId), 
+                    $"{nameof(addWalkRequest.RegionId)} no es valido");
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+        #endregion
     }
 }
